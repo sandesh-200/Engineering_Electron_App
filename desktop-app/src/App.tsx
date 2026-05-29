@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -41,7 +41,7 @@ function App() {
           />
         </Routes>
         <Toaster closeButton richColors position="top-right" />
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
   );
 }

@@ -1,0 +1,14 @@
+{
+  "name": "engineering-desktop-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix desktop-app\"",
+    "test": "npm run test --prefix server",
+    "fullstack": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix desktop-app\" \"wait-on http://localhost:5173 && npm run electron:dev --prefix desktop-app\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  }
+}

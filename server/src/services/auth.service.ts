@@ -25,10 +25,15 @@ export const registerUser = async (data: {
     },
   });
 
-  return user;
+  // Return without password
+  const { password: _, ...safeUser } = user;
+  return safeUser;
 };
 
-export const loginUser = async (data: { email: string; password: string }) => {
+export const loginUser = async (
+  data: { email: string; password: string },
+  meta: { ipAddress?: string; deviceInfo?: string }
+) => {
   const user = await prisma.user.findUnique({
     where: { email: data.email },
   });
@@ -37,16 +42,48 @@ export const loginUser = async (data: { email: string; password: string }) => {
     throw new Error("Invalid credentials");
   }
 
+  if (!user.isActive) {
+    throw new Error("Account is suspended. Contact your administrator.");
+  }
+
   const isValid = await comparePassword(data.password, user.password);
 
   if (!isValid) {
     throw new Error("Invalid credentials");
   }
 
+  // Record login log
+  await prisma.loginLog.create({
+    data: {
+      userId: user.id,
+      ipAddress: meta.ipAddress || "unknown",
+      deviceInfo: meta.deviceInfo || "unknown",
+    },
+  });
+
   const token = generateToken({
     id: user.id,
     role: user.role,
   });
 
-  return { user, token };
+  const { password: _, ...safeUser } = user;
+  return { user: safeUser, token };
+};
+
+export const getMe = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      subscriptionPlan: true,
+      subscriptionExpiresAt: true,
+      isActive: true,
+      createdAt: true,
+    },
+  });
+
+  return user;
 };

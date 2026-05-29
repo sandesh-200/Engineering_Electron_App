@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const role_middleware_1 = require("../middleware/role.middleware");
+const project_controller_1 = require("../controllers/project.controller");
+const subscription_middleware_1 = require("../middleware/subscription.middleware");
+const projectLimit_middleware_1 = require("../middleware/projectLimit.middleware");
+const router = (0, express_1.Router)();
+router.post("/", auth_middleware_1.authenticate, subscription_middleware_1.checkSubscription, projectLimit_middleware_1.enforceProjectLimit, (0, role_middleware_1.authorize)(["ADMIN", "ENGINEER"]), project_controller_1.create);
+router.get("/", auth_middleware_1.authenticate, (0, role_middleware_1.authorize)(["ADMIN", "ENGINEER", "VIEWER"]), project_controller_1.getAll);
+router.get("/:id", auth_middleware_1.authenticate, project_controller_1.getOne);
+router.put("/:id", auth_middleware_1.authenticate, (0, role_middleware_1.authorize)(["ADMIN", "ENGINEER"]), project_controller_1.update);
+router.delete("/:id", auth_middleware_1.authenticate, (0, role_middleware_1.authorize)(["ADMIN", "ENGINEER"]), project_controller_1.remove);
+exports.default = router;

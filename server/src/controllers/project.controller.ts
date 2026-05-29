@@ -35,7 +35,7 @@ export const getAll = async (req: AuthRequest, res: Response) => {
 export const getOne = async (req: AuthRequest, res: Response) => {
   try {
     const id = req.params.id as string;
-    const project = await getProjectById(id);
+    const project = await getProjectById(id, req.user!.id, req.user!.role);
 
     res.json(project);
   } catch (err: any) {

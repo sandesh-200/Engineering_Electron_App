@@ -23,11 +23,24 @@ export const getProjects = async (userId: string, role: string) => {
   });
 };
 
-export const getProjectById = async (id: string) => {
-  return await prisma.project.findUnique({
+export const getProjectById = async (
+  id: string,
+  userId: string,
+  role: string,
+) => {
+  const project = await prisma.project.findUnique({
     where: { id },
     include: { creator: true },
   });
+
+  if (!project) throw new Error("Project not found");
+
+  // Enforce ownership unless the requester is an ADMIN
+  if (role !== "ADMIN" && project.creatorId !== userId) {
+    throw new Error("Not allowed");
+  }
+
+  return project;
 };
 
 export const updateProject = async (

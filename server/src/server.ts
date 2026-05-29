@@ -7,12 +7,20 @@ import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes";
 import projectRoutes from "./routes/project.routes";
+import adminRoutes from "./routes/admin.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// Allow the Vite frontend to send cookies
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
@@ -20,8 +28,10 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.json({ status: "Server is up and running" });
 });
 

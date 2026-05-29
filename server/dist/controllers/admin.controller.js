@@ -73,7 +73,6 @@ exports.listLoginLogs = listLoginLogs;
 const removeUser = async (req, res) => {
     try {
         const id = req.params.id;
-        // Prevent self-deletion
         if (req.user?.id === id) {
             return res.status(400).json({ message: "Cannot delete your own account" });
         }

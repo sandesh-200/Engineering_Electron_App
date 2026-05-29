@@ -19,7 +19,6 @@ import {
   Settings2Icon,
   CircleHelpIcon,
   CommandIcon,
-  CreditCard,
   UserCog,
   LogOutIcon,
   LayoutDashboardIcon,
